@@ -1,0 +1,37 @@
+#version: '3.8'
+
+services:
+  web:
+    image: lms:1.0
+    ports:
+      - "5000:5000"
+    environment:
+
+      DATABASE_URL: postgresql://postgres:segni@db/librarydb
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+    volumes:
+      - web_data:/app/data
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: librarydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: segni
+    networks:
+      - mynetwork
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  web_data:
+    driver: local
+  db_data:
+    driver: local

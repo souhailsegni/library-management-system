@@ -1,0 +1,30 @@
+# web-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: lms:1.0
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DATABASE_URL
+          value: postgresql://postgres:segni@postgres:5432/librarydb
+        volumeMounts:
+        - name: web-storage
+          mountPath: /app/data
+      volumes:
+      - name: web-storage
+        persistentVolumeClaim:
+          claimName: web-pvc
